@@ -4,4 +4,8 @@ import { Entity, PrimaryColumn } from 'typeorm';
 export class Teacher {
   @PrimaryColumn()
   email: string;
+
+  constructor(email: string) {
+    this.email = email;
+  }
 }

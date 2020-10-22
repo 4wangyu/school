@@ -7,4 +7,9 @@ export class Student {
 
   @Column()
   suspended: boolean;
+
+  constructor(email: string, suspended: boolean) {
+    this.email = email;
+    this.suspended = suspended;
+  }
 }

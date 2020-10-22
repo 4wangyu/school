@@ -1,5 +1,5 @@
-import * as bodyParser from 'body-parser';
-import * as express from 'express';
+import bodyParser from 'body-parser';
+import express from 'express';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import router from './router';
@@ -11,7 +11,7 @@ createConnection()
 
     app.use('/api', router);
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3001;
     app.listen(port, () => console.log(`Server is listening on port: ${port}`));
   })
   .catch(console.error);

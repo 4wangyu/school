@@ -12,4 +12,9 @@ export class TeacherStudent {
 
   @ManyToOne(() => Student, { nullable: false })
   student: string;
+
+  constructor(teacher: string, student: string) {
+    this.teacher = teacher;
+    this.student = student;
+  }
 }
