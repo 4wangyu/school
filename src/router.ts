@@ -1,7 +1,7 @@
 import express from 'express';
 import { suspend } from './controller/StudentController';
 import {
-  commonStudents,
+  getCommonStudents,
   register,
   retrieveStudentsForNotifications,
 } from './controller/TeacherStudentController';
@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post('/register', register);
-router.get('/commonstudents', commonStudents);
+router.get('/commonstudents', getCommonStudents);
 router.post('/suspend', suspend);
 router.post('/retrievefornotifications', retrieveStudentsForNotifications);
 

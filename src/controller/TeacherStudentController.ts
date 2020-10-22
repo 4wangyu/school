@@ -36,14 +36,28 @@ function register(req: Request, res: Response) {
     .then(() => res.status(204).json())
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ message: err });
+      res.status(500).json({ message: err.message });
     });
 }
 
-async function commonStudents(req: Request, res: Response) {
-  const teacherStudentRepository = getRepository(TeacherStudent);
-  const s = await teacherStudentRepository.find();
-  res.json({ s });
+async function getCommonStudents(req: Request, res: Response) {
+  const teachers = Array.isArray(req.query.teacher)
+    ? req.query.teacher
+    : [req.query.teacher];
+
+  try {
+    const students = await getRepository(TeacherStudent)
+      .createQueryBuilder('ts')
+      .select('ts.student')
+      .where('ts.teacher IN (:teachers)', { teachers })
+      .groupBy('ts.student')
+      .having('count(distinct ts.teacher) = :len', { len: teachers.length })
+      .getRawMany();
+
+    res.status(200).json({ students: students.map((s) => s.studentEmail) });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 }
 
 async function retrieveStudentsForNotifications(req: Request, res: Response) {
@@ -52,4 +66,4 @@ async function retrieveStudentsForNotifications(req: Request, res: Response) {
   res.json({ s });
 }
 
-export { register, commonStudents, retrieveStudentsForNotifications };
+export { register, getCommonStudents, retrieveStudentsForNotifications };
