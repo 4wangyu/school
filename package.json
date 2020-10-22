@@ -21,7 +21,7 @@
    },
    "scripts": {
       "start": "nodemon src/index.ts",
-      "build": "tsc",
+      "build": "rm -r build && tsc",
       "serve": "node build/index.js"
    }
 }
