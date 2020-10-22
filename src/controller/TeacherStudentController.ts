@@ -36,7 +36,9 @@ function register(req: Request, res: Response) {
     .then(() => res.status(204).json())
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ message: err.message });
+      res
+        .status(500)
+        .json({ message: 'Internal error, please contact support' });
     });
 }
 
@@ -57,7 +59,7 @@ async function getCommonStudents(req: Request, res: Response) {
     res.status(200).json({ students: students.map((s) => s.studentEmail) });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Internal error, please contact support' });
   }
 }
 
