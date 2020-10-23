@@ -8,9 +8,9 @@ function suspend(req: Request, res: Response) {
   const studentRepository = getRepository(Student);
   studentRepository
     .findOne({ email: studentEmail })
-    .then((student) => {
+    .then(async (student) => {
       if (student) {
-        studentRepository.update(student, { suspended: true });
+        await studentRepository.update(student, { suspended: true });
         res.status(204).json();
       } else {
         res.status(404).json({ message: 'Student not found' });
