@@ -64,9 +64,41 @@ async function getCommonStudents(req: Request, res: Response) {
 }
 
 async function retrieveStudentsForNotifications(req: Request, res: Response) {
-  const teacherStudentRepository = getRepository(TeacherStudent);
-  const s = await teacherStudentRepository.find();
-  res.json({ s });
+  const { teacher, notification } = req.body;
+
+  const mentionedStudents = (
+    notification.match(/@[A-Za-z0-9_\-.+]+@[A-Za-z0-9_\-.]+\.[A-Za-z]{2,}/g) ||
+    []
+  ).map((emailWithAt: string) => emailWithAt.slice(1));
+
+  try {
+    const mentionedUnsuspendedStudents = mentionedStudents.length
+      ? await getRepository(Student)
+          .createQueryBuilder('st')
+          .select('st.email')
+          .where('st.suspended = :suspended', { suspended: false })
+          .andWhere('st.email IN (:students)', { students: mentionedStudents })
+          .getMany()
+      : [];
+
+    const unsuspendedStudentsUnderTeacher = await getRepository(TeacherStudent)
+      .createQueryBuilder('ts')
+      .select('ts.student')
+      .innerJoin('ts.student', 'st')
+      .where('ts.teacher = :teacher', { teacher })
+      .andWhere('st.suspended = :suspended', { suspended: false })
+      .getRawMany();
+
+    const recipients = new Set<string>([
+      ...unsuspendedStudentsUnderTeacher.map((s) => s.studentEmail),
+      ...mentionedUnsuspendedStudents.map((s) => s.email),
+    ]);
+
+    res.status(200).json({ recipients: Array.from(recipients) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal error, please contact support' });
+  }
 }
 
 export { register, getCommonStudents, retrieveStudentsForNotifications };
