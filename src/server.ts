@@ -1,6 +1,9 @@
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import router from './router';
@@ -9,7 +12,13 @@ createConnection()
   .then(async () => {
     const app = express();
 
-    app.use(bodyParser.json(), cors());
+    app.use(
+      bodyParser.json(),
+      compression(),
+      cors(),
+      helmet(),
+      morgan('common')
+    );
 
     app.use('/api', router);
 
