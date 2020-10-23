@@ -5,13 +5,22 @@ import {
   register,
   retrieveStudentsForNotifications,
 } from './controller/TeacherStudentController';
-import { registerValidator } from './validator';
+import {
+  commonStudentsValidator,
+  registerValidator,
+  retrieveForNotificationsValidator,
+  suspendValidator,
+} from './validator';
 
 const router = express.Router();
 
 router.post('/register', registerValidator, register);
-router.get('/commonstudents', getCommonStudents);
-router.post('/suspend', suspend);
-router.post('/retrievefornotifications', retrieveStudentsForNotifications);
+router.get('/commonstudents', commonStudentsValidator, getCommonStudents);
+router.post('/suspend', suspendValidator, suspend);
+router.post(
+  '/retrievefornotifications',
+  retrieveForNotificationsValidator,
+  retrieveStudentsForNotifications
+);
 
 export default router;

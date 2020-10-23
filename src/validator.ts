@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { body, validationResult } from 'express-validator';
+import { NextFunction, Request, Response } from 'express';
+import { body, query, validationResult } from 'express-validator';
 
 const validationErrorHandler = (
   req: Request,
@@ -21,4 +21,29 @@ const registerValidator = [
   validationErrorHandler,
 ];
 
-export { registerValidator };
+const commonStudentsValidator = [
+  (req: Request, res: Response, next: NextFunction) => {
+    req.query.teacher = Array.isArray(req.query.teacher)
+      ? req.query.teacher
+      : ([req.query.teacher] as string[]);
+    next();
+  },
+  query('teacher').isArray({ min: 1 }),
+  query('teacher.*').isEmail(),
+  validationErrorHandler,
+];
+
+const suspendValidator = [body('student').isEmail(), validationErrorHandler];
+
+const retrieveForNotificationsValidator = [
+  body('teacher').isEmail(),
+  body('notification').isString(),
+  validationErrorHandler,
+];
+
+export {
+  registerValidator,
+  commonStudentsValidator,
+  suspendValidator,
+  retrieveForNotificationsValidator,
+};

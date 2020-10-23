@@ -43,9 +43,7 @@ function register(req: Request, res: Response) {
 }
 
 async function getCommonStudents(req: Request, res: Response) {
-  const teachers = Array.isArray(req.query.teacher)
-    ? req.query.teacher
-    : [req.query.teacher];
+  const teachers = req.query.teacher;
 
   try {
     const students = await getRepository(TeacherStudent)
