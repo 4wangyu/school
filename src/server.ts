@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import express, { Request, Response } from 'express';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
@@ -7,7 +8,8 @@ import router from './router';
 createConnection()
   .then(async () => {
     const app = express();
-    app.use(bodyParser.json());
+
+    app.use(bodyParser.json(), cors());
 
     app.use('/api', router);
 
