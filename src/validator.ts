@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { body, query, validationResult } from 'express-validator';
+const { body, query, validationResult } = require('express-validator');
 
 const validationErrorHandler = (
   req: Request,
