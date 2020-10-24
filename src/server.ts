@@ -9,7 +9,7 @@ import { createConnection } from 'typeorm';
 import router from './router';
 
 createConnection()
-  .then(async () => {
+  .then(() => {
     const app = express();
 
     app.use(
