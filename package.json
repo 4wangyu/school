@@ -4,7 +4,7 @@
    "description": "Awesome project developed with TypeORM.",
    "scripts": {
       "start": "nodemon src/server.ts",
-      "test": "jest",
+      "test": "jest --detectOpenHandles",
       "build": "tsc"
    },
    "dependencies": {
