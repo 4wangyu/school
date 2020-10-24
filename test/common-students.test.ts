@@ -1,23 +1,8 @@
 import express, { Express } from 'express';
 import request from 'supertest';
-import { createConnection, getConnection, getRepository } from 'typeorm';
+import { createConnection, getConnection } from 'typeorm';
 import * as tsController from '../src/controller/TeacherStudentController';
-import { Student } from '../src/entity/Student';
-import { Teacher } from '../src/entity/Teacher';
-import { TeacherStudent } from '../src/entity/TeacherStudent';
 import router from '../src/router';
-
-const seed = async () => {
-  await getRepository(Teacher).save(new Teacher('teacherken@gmail.com'));
-  await getRepository(Teacher).save(new Teacher('teacherjoe@gmail.com'));
-  await getRepository(Student).save(new Student('studentjon@gmail.com', false));
-  await getRepository(TeacherStudent).save(
-    new TeacherStudent('teacherken@gmail.com', 'studentjon@gmail.com')
-  );
-  await getRepository(TeacherStudent).save(
-    new TeacherStudent('teacherjoe@gmail.com', 'studentjon@gmail.com')
-  );
-};
 
 describe('testing /api/commonstudents', () => {
   let app: Express;
@@ -31,8 +16,6 @@ describe('testing /api/commonstudents', () => {
       logging: false,
     });
     app = express().use('/api', router);
-
-    await seed();
   });
 
   afterAll(async () => {
