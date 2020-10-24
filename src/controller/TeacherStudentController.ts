@@ -42,19 +42,26 @@ function register(req: Request, res: Response) {
     });
 }
 
+export const getCommonStudentEmails = async (
+  teachers: string[]
+): Promise<string[]> => {
+  const students = await getRepository(TeacherStudent)
+    .createQueryBuilder('ts')
+    .select('ts.student')
+    .where('ts.teacher IN (:teachers)', { teachers })
+    .groupBy('ts.student')
+    .having('count(distinct ts.teacher) = :len', { len: teachers.length })
+    .getRawMany();
+  return students.map((s) => s.studentEmail);
+};
+
 async function getCommonStudents(req: Request, res: Response) {
-  const teachers = req.query.teacher;
+  const teachers = req.query.teacher as string[];
 
   try {
-    const students = await getRepository(TeacherStudent)
-      .createQueryBuilder('ts')
-      .select('ts.student')
-      .where('ts.teacher IN (:teachers)', { teachers })
-      .groupBy('ts.student')
-      .having('count(distinct ts.teacher) = :len', { len: teachers.length })
-      .getRawMany();
+    const students = await getCommonStudentEmails(teachers);
 
-    res.status(200).json({ students: students.map((s) => s.studentEmail) });
+    res.status(200).json({ students });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal error, please contact support' });

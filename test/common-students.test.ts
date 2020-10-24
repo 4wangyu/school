@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import request from 'supertest';
 import { createConnection, getConnection, getRepository } from 'typeorm';
+import * as tsController from '../src/controller/TeacherStudentController';
 import { Student } from '../src/entity/Student';
 import { Teacher } from '../src/entity/Teacher';
 import { TeacherStudent } from '../src/entity/TeacherStudent';
@@ -23,9 +24,8 @@ describe('testing /api/commonstudents', () => {
 
   beforeAll(async () => {
     await createConnection({
-      type: 'sqljs',
-      database: new Uint8Array(),
-      location: 'database',
+      type: 'sqlite',
+      database: ':memory:',
       entities: ['src/entity/**/*.ts'],
       synchronize: true,
       logging: false,
@@ -55,15 +55,19 @@ describe('testing /api/commonstudents', () => {
     expect(res.body).toEqual({ students: [] });
   });
 
-  // it('should respond 200 with common students', async () => {
-  //   const res = await request(app).get(
-  //     '/api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmail.com'
-  //   );
-  //   console.log(res.body);
+  it('should respond 200 with common students', async () => {
+    // sqlite only supports DISTINCT clause in SELECT statements, use mocking instead
+    jest
+      .spyOn(tsController, 'getCommonStudentEmails')
+      .mockResolvedValue(['studentjon@gmail.com']);
 
-  //   expect(res.status).toBe(200);
-  //   expect(res.body).toEqual({
-  //     students: ['studentjon@gmail.com'],
-  //   });
-  // });
+    const res = await request(app).get(
+      '/api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmail.com'
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      students: ['studentjon@gmail.com'],
+    });
+  });
 });
