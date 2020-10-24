@@ -29,8 +29,7 @@
       "typeorm": "0.2.28"
    },
    "scripts": {
-      "dev": "nodemon src/server.ts",
-      "build": "rm -r build && tsc",
+      "build": "tsc",
       "start": "pm2 start build/server.js"
    }
 }
