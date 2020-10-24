@@ -8,14 +8,10 @@ import { TeacherStudent } from '../src/entity/TeacherStudent';
 import bodyParser from 'body-parser';
 
 const seed = async () => {
-  await getRepository(Teacher).insert(new Teacher('teacherken@gmail.com'));
-  await getRepository(Student).insert(
-    new Student('studentjon@gmail.com', false)
-  );
-  await getRepository(Student).insert(
-    new Student('studenthon@gmail.com', false)
-  );
-  await getRepository(TeacherStudent).insert(
+  await getRepository(Teacher).save(new Teacher('teacherken@gmail.com'));
+  await getRepository(Student).save(new Student('studentjon@gmail.com', false));
+  await getRepository(Student).save(new Student('studenthon@gmail.com', false));
+  await getRepository(TeacherStudent).save(
     new TeacherStudent('teacherken@gmail.com', 'studentjon@gmail.com')
   );
 };
@@ -25,12 +21,11 @@ describe('testing /api/retrievefornotifications', () => {
 
   beforeAll(async () => {
     await createConnection({
-      type: 'sqljs',
-      database: new Uint8Array(),
-      location: 'database',
+      type: 'sqlite', // sql.js seems to not support `IN` operator, use sqlite instead
+      database: ':memory:',
       entities: ['src/entity/**/*.ts'],
       synchronize: true,
-      logging: true,
+      logging: false,
     });
     app = express().use(bodyParser.json()).use('/api', router);
     await seed();
@@ -65,16 +60,15 @@ describe('testing /api/retrievefornotifications', () => {
     });
   });
 
-  // it('should respond 200 with mentioned students & students registered under teacher', async () => {
-  //   const res = await request(app).post('/api/retrievefornotifications').send({
-  //     teacher: 'teacherken@gmail.com',
-  //     notification: 'Hello there @studenthon@gmail.com',
-  //   });
-  //   console.log(res.body);
+  it('should respond 200 with mentioned students & students registered under teacher', async () => {
+    const res = await request(app).post('/api/retrievefornotifications').send({
+      teacher: 'teacherken@gmail.com',
+      notification: 'Hello there @studenthon@gmail.com',
+    });
 
-  //   expect(res.status).toBe(200);
-  //   expect(res.body).toEqual({
-  //     recipients: ['studentjon@gmail.com', 'studenthon@gmail.com'],
-  //   });
-  // });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      recipients: ['studentjon@gmail.com', 'studenthon@gmail.com'],
+    });
+  });
 });
