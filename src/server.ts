@@ -22,7 +22,7 @@ createConnection()
 
     app.use('/api', router);
 
-    app.use('*', (req: Request, res: Response) => {
+    app.all('*', (req: Request, res: Response) => {
       res.status(404).json({ message: 'Not found' });
     });
 
