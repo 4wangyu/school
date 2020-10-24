@@ -4,7 +4,7 @@ import { Student } from '../entity/Student';
 import { Teacher } from '../entity/Teacher';
 import { TeacherStudent } from '../entity/TeacherStudent';
 
-function register(req: Request, res: Response) {
+const register = (req: Request, res: Response) => {
   const { teacher, students } = req.body;
 
   getManager()
@@ -40,7 +40,7 @@ function register(req: Request, res: Response) {
         .status(500)
         .json({ message: 'Internal error, please contact support' });
     });
-}
+};
 
 export const getCommonStudentEmails = async (
   teachers: string[]
@@ -55,7 +55,7 @@ export const getCommonStudentEmails = async (
   return students.map((s) => s.studentEmail);
 };
 
-async function getCommonStudents(req: Request, res: Response) {
+const getCommonStudents = async (req: Request, res: Response) => {
   const teachers = req.query.teacher as string[];
 
   try {
@@ -66,9 +66,12 @@ async function getCommonStudents(req: Request, res: Response) {
     console.error(err);
     res.status(500).json({ message: 'Internal error, please contact support' });
   }
-}
+};
 
-async function retrieveStudentsForNotifications(req: Request, res: Response) {
+const retrieveStudentsForNotifications = async (
+  req: Request,
+  res: Response
+) => {
   const { teacher, notification } = req.body;
 
   const mentionedStudents = (
@@ -104,6 +107,6 @@ async function retrieveStudentsForNotifications(req: Request, res: Response) {
     console.error(err);
     res.status(500).json({ message: 'Internal error, please contact support' });
   }
-}
+};
 
 export { register, getCommonStudents, retrieveStudentsForNotifications };

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { Student } from '../entity/Student';
 
-function suspend(req: Request, res: Response) {
+const suspend = (req: Request, res: Response) => {
   const studentEmail = req.body.student;
 
   const studentRepository = getRepository(Student);
@@ -22,6 +22,6 @@ function suspend(req: Request, res: Response) {
         .status(500)
         .json({ message: 'Internal error, please contact support' });
     });
-}
+};
 
 export { suspend };
