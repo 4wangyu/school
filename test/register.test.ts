@@ -11,7 +11,6 @@ describe('testing /api/register', () => {
       type: 'sqljs',
       database: new Uint8Array(),
       location: 'database',
-      dropSchema: true,
       entities: ['src/entity/**/*.ts'],
       synchronize: true,
       logging: false,
