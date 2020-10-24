@@ -35,17 +35,16 @@ describe('testing /api/retrievefornotifications', () => {
     await getConnection().close();
   });
 
-  it('should respond 400 when no request body', () => {
-    request(app).post('/api/retrievefornotifications').send().expect(400);
+  it('should respond 400 when no request body', async () => {
+    const res = await request(app).post('/api/retrievefornotifications').send();
+    expect(res.status).toBe(400);
   });
 
-  it('should respond 400 when req body has wrong format', () => {
-    request(app)
-      .post('/api/retrievefornotifications')
-      .send({
-        teacher: 'teacherken@gmail.com',
-      })
-      .expect(400);
+  it('should respond 400 when req body has wrong format', async () => {
+    const res = await request(app).post('/api/retrievefornotifications').send({
+      teacher: 'teacherken@gmail.com',
+    });
+    expect(res.status).toBe(400);
   });
 
   it('should respond 200 with students registered under teacher', async () => {

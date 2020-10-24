@@ -22,12 +22,16 @@ describe('testing /api/commonstudents', () => {
     await getConnection().close();
   });
 
-  it('should respond 400 when no query param', () => {
-    request(app).get('/api/commonstudents').send().expect(400);
+  it('should respond 400 when no query param', async () => {
+    const res = await request(app).get('/api/commonstudents').send();
+    expect(res.status).toBe(400);
   });
 
-  it('should respond 400 when param is invalid email', () => {
-    request(app).get('/api/commonstudents?teacher=invalid%40email').expect(400);
+  it('should respond 400 when param is invalid email', async () => {
+    const res = await request(app).get(
+      '/api/commonstudents?teacher=invalid%40email'
+    );
+    expect(res.status).toBe(400);
   });
 
   it('should respond 200 with empty array when no common students', async () => {
