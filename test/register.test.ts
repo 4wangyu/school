@@ -15,9 +15,8 @@ describe('testing /api/register', () => {
       entities: ['src/entity/**/*.ts'],
       synchronize: true,
       logging: false,
-    }).then(() => {
-      app = express().use('/api', router);
     });
+    app = express().use('/api', router);
   });
 
   afterAll(async () => {
